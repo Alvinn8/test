@@ -1,0 +1,15 @@
+{
+    "key": "value",
+     "something": [
+         {
+             "id": "hello",
+             "value": "Hello World",
+             "permission": "none"
+         },
+         {
+             "id": "hi",
+             "value": "Hey",
+             "permission": "admin"
+         }
+     ]
+}
