@@ -1,5 +1,6 @@
 {
     "key": "value",
+    "test": "test pr",
      "something": [
          {
              "id": "hello",
