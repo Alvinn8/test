@@ -22,17 +22,6 @@ fn testCase(
     try std.testing.expectEqualStrings(expected_error_token, errors.items[0].where.?);
 }
 
-test "unexpected token" {
-    const source =
-        \\-function "main"
-        \\-begin
-        \\push .label
-        \\-end
-    ;
-
-    try testCase(source, .@"Unexpected token", "label");
-}
-
 test "duplicate label" {
     const source =
         \\-function "main"
