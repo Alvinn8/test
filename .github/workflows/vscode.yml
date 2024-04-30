@@ -10,11 +10,11 @@ jobs:
   build2:
     runs-on: ubuntu-latest
     steps:
-      - run: ls -la
-      - run: pwd
       - uses: actions/checkout@v4
         with:
           sparse-checkout: editor/vscode
+      - run: ls -la
+      - run: pwd
       - run: npm install
       - uses: lannonbr/vsce-action@3.0.0
         with:
