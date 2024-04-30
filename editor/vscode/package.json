@@ -2,7 +2,7 @@
   "name": "vscode-vemod",
   "displayName": "VeMod Language",
   "description": "Language support for the VeMod assembly language",
-  "version": "0.1.0",
+  "version": "0.1.0-test7",
   "license": "MIT",
   "repository": {
     "type": "git",
