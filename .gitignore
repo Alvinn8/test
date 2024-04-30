@@ -1,0 +1,20 @@
+# Zig directories
+zig-cache/
+zig-out/
+
+# Log files
+*.log
+*.log.*
+
+# Vemod binary files
+*.vbf
+
+# Make
+Makefile
+
+# Helix
+.helix/
+
+# VS Code
+.vscode
+*.vsix
