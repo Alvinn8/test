@@ -1,6 +1,6 @@
-pub const VMInstruction = @import("VMInstruction.zig");
+pub const VMContext = @import("VMContext.zig");
+pub const interpreter = @import("interpreter.zig");
 
 test {
-    _ = @import("types.zig");
-    _ = @import("Interpreter.zig");
+    _ = @import("interpreter.zig");
 }

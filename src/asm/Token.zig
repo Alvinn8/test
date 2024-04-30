@@ -1,6 +1,6 @@
 const std = @import("std");
+const Opcode = @import("arch").Opcode;
 const Token = @This();
-const instr = @import("arch").instr;
 const Error = @import("Error.zig");
 
 tag: Tag,
@@ -9,10 +9,11 @@ where: []const u8,
 pub const Tag = union(enum) {
     keyword: Keyword,
     string,
+    identifier,
     label,
     int: i64,
     float: f64,
-    instr: instr.Instruction,
+    instr: Opcode,
     err,
 };
 
@@ -20,6 +21,17 @@ pub const Keyword = enum {
     function,
     begin,
     end,
+    string,
+};
+
+/// The prefix for tokens in the IR
+/// E.g. `-function` or `.label`
+pub const prefix = struct {
+    pub const keyword = '-';
+    pub const label = '.';
+    pub const integer = '%';
+    pub const float = '@';
+    pub const identifier = '$';
 };
 
 pub const Scanner = struct {
@@ -40,10 +52,11 @@ pub const Scanner = struct {
         const c = self.current().?;
 
         switch (c) {
-            instr.prefix.keyword => return self.keyword(),
-            instr.prefix.integer => return self.integer(),
-            instr.prefix.float => return self.float(),
-            instr.prefix.label => return self.label(),
+            prefix.keyword => return self.keyword(),
+            prefix.integer => return self.integer(),
+            prefix.float => return self.float(),
+            prefix.label => return self.label(),
+            prefix.identifier => return self.identifier(),
             '"' => return self.string(),
             'a'...'z', 'A'...'Z' => return self.instruction(),
             else => {
@@ -117,9 +130,15 @@ pub const Scanner = struct {
         return Token{ .tag = .{ .keyword = kw }, .where = where };
     }
 
+    fn identifier(self: *Scanner) !?Token {
+        self.advance();
+        const where = self.readWord();
+        return Token{ .tag = .identifier, .where = where };
+    }
+
     fn instruction(self: *Scanner) !?Token {
         const where = self.readWord();
-        const _instr = std.meta.stringToEnum(instr.Instruction, where) orelse {
+        const _instr = std.meta.stringToEnum(Opcode, where) orelse {
             try self.errors.append(.{ .tag = .@"Invalid instruction", .where = where });
             return .{ .tag = .err, .where = where };
         };
@@ -164,6 +183,11 @@ pub const Scanner = struct {
                     .where = where,
                 });
                 return .{ .tag = .err, .where = self.readWord() };
+            }
+            if (c == '\\') {
+                self.advance();
+                self.advance();
+                continue;
             }
             if (c == '"') {
                 end = self.cursor;

@@ -1,0 +1,18 @@
+autocmd BufNewFile,BufRead *.mcl set filetype=melancolang
+autocmd BufNewFile,BufRead *.vmd set filetype=vemod
+
+call ale#linter#Define('melancolang', {
+\   'name': 'vmdls',
+\   'lsp': 'stdio',
+\   'executable': 'vmdls',
+\   'command': '%e',
+\   'project_root': '.',
+\})
+
+call ale#linter#Define('vemod', {
+\   'name': 'vmdls',
+\   'lsp': 'stdio',
+\   'executable': 'vmdls',
+\   'command': '%e',
+\   'project_root': '.',
+\})

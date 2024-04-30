@@ -1,7 +1,7 @@
 const std = @import("std");
+const Opcode = @import("arch").Opcode;
 const Asm = @import("Asm.zig");
 const Error = @import("Error.zig");
-const Instruction = @import("arch").instr.Instruction;
 
 const Tag = @TypeOf(@as(Error, undefined).tag);
 
@@ -22,65 +22,114 @@ fn testCase(
     try std.testing.expectEqualStrings(expected_error_token, errors.items[0].where.?);
 }
 
+test "unexpected token" {
+    const source =
+        \\-function $main
+        \\-begin
+        \\push .label
+        \\-end
+    ;
+
+    try testCase(source, .@"Unexpected token", "label");
+}
+
 test "duplicate label" {
     const source =
-        \\-function "main"
+        \\-function $main
         \\-begin
         \\.label
         \\.label
         \\-end
     ;
 
-    try testCase(source, .@"Duplicate label or function", "label");
+    try testCase(source, .@"Duplicate symbol", "label");
 }
 
 test "duplicate function" {
     const source =
-        \\-function "main"
+        \\-function $main
         \\-begin
         \\-end
-        \\-function "main"
+        \\-function $main
         \\-begin
         \\-end
     ;
 
-    try testCase(source, .@"Duplicate label or function", "main");
+    try testCase(source, .@"Duplicate symbol", "main");
+}
+
+test "duplicate string" {
+    const source =
+        \\-string $string "hej"
+        \\-string $string "nej"
+        \\-function $main
+        \\-begin
+        \\-end
+    ;
+
+    try testCase(source, .@"Duplicate symbol", "string");
 }
 
 test "unresolved label" {
     const source =
-        \\-function "main"
+        \\-function $main
         \\-begin
         \\jmp .label
         \\-end
     ;
 
-    try testCase(source, .@"Unresolved label or function", "label");
+    try testCase(source, .@"Unresolved symbol", "label");
 }
 
 test "unresolved function" {
     const source =
-        \\-function "main"
+        \\-function $main
         \\-begin
-        \\call "func"
+        \\call $func
         \\-end
     ;
 
-    try testCase(source, .@"Unresolved label or function", "func");
+    try testCase(source, .@"Unresolved symbol", "func");
+}
+
+test "unresolved string" {
+    const source =
+        \\-function $main
+        \\-begin
+        \\pushs $string
+        \\-end
+    ;
+
+    try testCase(source, .@"Unresolved symbol", "string");
+}
+
+test "invalid escape character" {
+    const source =
+        \\-string $message "Hello \m there!"
+        \\-function $main
+        \\-begin
+        \\-end
+    ;
+
+    try testCase(source, .@"Invalid escape character", "m");
 }
 
 test "success" {
     const source =
-        \\-function "main"
+        \\-string $message "My name is:\n" "\"Ludvig\""
+        \\-function $main
         \\-begin
-        \\call "other"
+        \\call $other
         \\-end
         \\
-        \\-function "other"
+        \\-function $other
         \\-begin
         \\push %0
         \\pushf @3.1415
         \\load %0
+        \\pushs $message
+        \\struct_load $hello
+        \\struct_store $goodbye
         \\add
         \\jmp .label
         \\stack_alloc %1000000
@@ -103,16 +152,16 @@ test "success" {
 
 test "patching calls" {
     const source =
-        \\-function "main"
+        \\-function $main
         \\-begin
-        \\call "other" #0
+        \\call $other  #0
         \\push %0      #1 (doing some other stuff to make it interesting)
         \\pop          #2
         \\load %0      #3
         \\store %0     #4
         \\-end
         \\
-        \\-function "other"
+        \\-function $other
         \\-begin
         \\push %0      #5
         \\-end
@@ -129,13 +178,13 @@ test "patching calls" {
 
     try std.testing.expectEqual(@as(usize, 0), errors.items.len);
     try std.testing.expectEqual(@as(usize, 6), code.len);
-    try std.testing.expectEqual(Instruction.call, code[0].op);
+    try std.testing.expectEqual(Opcode.call, code[0].op);
     try std.testing.expectEqual(@as(usize, 5), code[0].operand.location);
 }
 
 test "patching labels" {
     const source =
-        \\-function "main"
+        \\-function $main
         \\-begin
         \\jmp .label   #0
         \\push %0      #1
@@ -156,13 +205,13 @@ test "patching labels" {
 
     try std.testing.expectEqual(@as(usize, 0), errors.items.len);
     try std.testing.expectEqual(@as(usize, 4), code.len);
-    try std.testing.expectEqual(Instruction.jmp, code[0].op);
+    try std.testing.expectEqual(Opcode.jmp, code[0].op);
     try std.testing.expectEqual(@as(usize, 3), code[0].operand.location);
 }
 
 test "no main" {
     const source =
-        \\-function "not_main"
+        \\-function $not_main
         \\-begin
         \\-end
     ;
