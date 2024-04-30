@@ -1,6 +1,0 @@
-{
-  "flagWords": [],
-  "words": ["refcount", "alloc", "memcpy", "deinit", "struct"],
-  "version": "0.2",
-  "language": "en"
-}
