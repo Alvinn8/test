@@ -7,9 +7,11 @@ on:
       - editor/vscode/**
 
 jobs:
-  build:
+  build2:
     runs-on: ubuntu-latest
     steps:
+      - run: ls -la
+      - run: pwd
       - uses: actions/checkout@v4
         with:
           sparse-checkout: editor/vscode
