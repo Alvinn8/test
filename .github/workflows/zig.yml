@@ -23,8 +23,7 @@ jobs:
       - name: Install OpenGL and glfw (Linux)
         if: runner.os == 'Linux'
         run: |
-          sudo apt-get install libglew-dev
-          sudo apt-get install libglfw3
+          sudo apt-get install libglew-dev libglfw3 libglfw3-dev
       - run: zig build
 
   lint:
