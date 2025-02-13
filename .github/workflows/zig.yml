@@ -20,7 +20,6 @@ jobs:
       - uses: mlugg/setup-zig@v1
         with:
           version: ${{ matrix.zig_version }}
-      - uses: Hanaasagi/zig-action-cache@master
       - name: Install OpenGL and glfw (Linux)
         if: runner.os == 'Linux'
         run: |
