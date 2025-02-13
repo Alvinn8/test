@@ -1,5 +1,5 @@
 const std = @import("std");
-const g = @import("../lib.zig");
+const g = @import("graphics.zig");
 
 pub fn createTexture(path: [:0]const u8) !u32 {
     var width: c_int = 0;
