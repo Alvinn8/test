@@ -109,7 +109,6 @@ pub fn main() !void {
         );
     }
 
-
     // Setup Dear ImGui style
     gui.imgui.StyleColorsDark();
 
@@ -120,7 +119,7 @@ pub fn main() !void {
         .init_error, .open_library => return error.LoadOpenGLFailed,
         .opengl_version_unsupported => {
             std.log.warn("tried to run on unsupported opengl version", .{});
-        }
+        },
         //.opengl_version_unsupported => if (!build_options.OPENGL_ES_PROFILE) return error.UnsupportedOpenGlVersion,
     }
     _ = gui.ImGui_ImplOpenGL3_Init("#version 300 es");
@@ -191,7 +190,6 @@ pub fn main() !void {
         //);
         //zgl.clear(zgl.COLOR_BUFFER_BIT);
         gui.ImGui_ImplOpenGL3_RenderDrawData(gui.imgui.GetDrawData());
-
 
         running = window.running();
     }

@@ -26,7 +26,6 @@ pub fn build(b: *std.Build) void {
     const optimize = b.standardOptimizeOption(.{});
     const os_tag = target.result.os.tag;
 
-
     const zig_imgui_dep = b.dependency("Zig-ImGui", .{
         .target = target,
         .optimize = optimize,
@@ -46,7 +45,7 @@ pub fn build(b: *std.Build) void {
         //   moment.
         // * Stateful Unicode features such as skin tone modifiers are not
         //   supported by the text renderer.
-        .enable_lunasvg = false // if unspecified, the default is false
+        .enable_lunasvg = false, // if unspecified, the default is false
     });
 
     const imgui_dep = zig_imgui_dep.builder.dependency("imgui", .{
