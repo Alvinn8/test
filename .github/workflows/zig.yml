@@ -30,6 +30,12 @@ jobs:
         run: brew install glfw
       - name: Build the project
         run: zig build
+      - name: Upload binary
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/github-actions-2'
+        uses: actions/upload-artifact@v4
+        with:
+          name: project-name-${{ runner.os }}
+          path: zig-out/*
 
   lint:
     runs-on: ubuntu-latest
