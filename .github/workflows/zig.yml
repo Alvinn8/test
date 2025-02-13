@@ -25,7 +25,11 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get install libglew-dev libglfw3 libglfw3-dev
-      - run: zig build
+      - name: Install glfw (macOS)
+        if: runner.os == 'macOS'
+        run: brew install glfw
+      - name: Build the project
+        run: zig build
 
   lint:
     runs-on: ubuntu-latest
