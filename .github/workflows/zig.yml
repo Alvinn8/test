@@ -20,6 +20,11 @@ jobs:
       - uses: mlugg/setup-zig@v1
         with:
           version: ${{ matrix.zig_version }}
+      - name: Install OpenGL and glfw (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          apt-get install libglew-dev
+          apt-get install libglfw3
       - run: zig build
 
   lint:
