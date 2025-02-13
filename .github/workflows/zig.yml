@@ -2,7 +2,7 @@ name: Zig Build and Lint
 
 on:
   push:
-    branches: [ "main", "github-actions" ]
+    branches: [ "main", "github-actions-2" ]
   pull_request:
     branches: [ "main" ]
 
