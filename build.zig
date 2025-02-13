@@ -53,7 +53,7 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
-    const lazy_xcode_dep = switch (target.result.os.tag.isDarwin()) {
+    const lazy_xcode_dep = switch (target.result.os.tag.isDarwin() and false) {
         true => b.lazyDependency("xcode_frameworks", .{ .target = target, .optimize = optimize }),
         else => null,
     };

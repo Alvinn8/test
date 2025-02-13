@@ -14,12 +14,13 @@ jobs:
         matrix:
           zig_version: ['0.13.0']
           #os: [ubuntu-latest, windows-latest, macOS-latest]
-          os: [ubuntu-latest, windows-latest]
+          os: [ubuntu-latest, windows-latest, macOS-latest]
     steps:
       - uses: actions/checkout@v4
       - uses: mlugg/setup-zig@v1
         with:
           version: ${{ matrix.zig_version }}
+      - uses: Hanaasagi/zig-action-cache@master
       - name: Install OpenGL and glfw (Linux)
         if: runner.os == 'Linux'
         run: |
