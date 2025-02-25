@@ -1,20 +1,16 @@
 name: Zig Build and Lint
 
 on:
-  push:
-    branches: [ "main", "github-actions-2" ]
-  pull_request:
-    branches: [ "main" ]
+  push: {}
 
 jobs:
   build:
     name: Build on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
-        matrix:
-          zig_version: ['0.13.0']
-          #os: [ubuntu-latest, windows-latest, macOS-latest]
-          os: [ubuntu-latest, windows-latest, macOS-latest]
+      matrix:
+        zig_version: ['0.13.0']
+        os: [ubuntu-latest, windows-latest, macOS-latest]
     steps:
       - uses: actions/checkout@v4
       - uses: mlugg/setup-zig@v1
@@ -30,7 +26,7 @@ jobs:
       - name: Build the project
         run: zig build
       - name: Upload binary
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/github-actions-2'
+        if: github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v4
         with:
           name: project-name-${{ runner.os }}
